@@ -25,3 +25,78 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+form{
+  width: 500px;
+  margin-right: 1rem;
+  align-items: center;
+}
+
+input, textarea{
+  width: 100%;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.137);
+  border-radius: 0.3rem;
+}
+
+textarea{
+    resize: none;  
+}
+
+button{
+  padding: 0.8rem;
+  width: 40%;
+  background: rgb(195,255,56);
+  border: node;
+  cursor: pointer;
+}
+
+.caixacontatos{
+  background-color: rgb(237,255,194);
+  width: 500px;
+  height: 500px;
+  overflow: auto;
+}
+
+.caixaindividual{
+  background: rgb(229, 240, 182);
+  border-radius: 0.5rem;
+  text-align: left;
+  max-height: 200px;
+  box-sizing: content-box;
+}
+
+.nometitulo{
+  font-size: 1.5rem;
+  text-align: left;
+  padding: 0.1rem 1rem;
+  font-weight: bold;
+ }
+
+ .boxtitulo{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+ }
+
+ a{
+  color: red;
+  margin-left: 0.5rem;
+}
+
+a:hover{
+  font-weight: bold;
+}
+
+.dados{
+  margin: 0;
+  padding: 0.5rem 1.5rem;
+}
