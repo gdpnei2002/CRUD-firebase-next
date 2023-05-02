@@ -1,12 +1,38 @@
 import { database } from "@/services/firebase"
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 
+type Contato ={
+  chave: string,
+  nome: string,
+  email: string,
+  telefone: string,
+  observacoes: string
+}
 export default function Home() {
 
   const [ nome,setNome] = useState('')
   const [ email,setEmail] = useState('')
   const [ telefone,setTelefone] = useState('')
   const [ observacoes,setObservacoes] = useState('')
+
+  const [contatos, setContatos] = useState<Contato[]>()
+
+  useEffect(() =>{
+    const RefContatos = database.ref('contatos')
+
+    RefContatos.on('value', resultado =>{
+      const resultadoContatos = Object.entries<Contato>(resultado.val() ?? {}).map(([chave,valor]) =>{
+        return {
+          'chave': chave,
+          'nome': valor.nome,
+          'email': valor.email,
+          'telefone': valor.telefone,
+          'observacoes': valor.observacoes,
+        }
+      })
+      setContatos(resultadoContatos)
+    })
+  },[])
 
   function gravar(event: FormEvent){
     event.preventDefault()
@@ -16,35 +42,44 @@ export default function Home() {
       nome,
       email,
       telefone,
-      observacoes
+      observacoes,
     }
+
     ref.push(dados)
+    setNome('')
+    setEmail('')
+    setTelefone('')
+    setObservacoes('')
   }
   return (
     <main className="container">
       <form action="" onSubmit={gravar}>
-        <input type="text" placeholder='Nome' onChange={event => setNome(event.target.value)} />
-        <input type="email" placeholder='Email' onChange={event => setEmail(event.target.value)} />
-        <input type="tel" placeholder='telefone' onChange={event => setTelefone(event.target.value)} />
-        <textarea placeholder='Observações' onChange={event => setObservacoes(event.target.value)}></textarea>
+        <input type="text" value={nome} placeholder='Nome' onChange={event => setNome(event.target.value)} />
+        <input type="email" value={email} placeholder='Email' onChange={event => setEmail(event.target.value)} />
+        <input type="tel" value={telefone} placeholder='telefone' onChange={event => setTelefone(event.target.value)} />
+        <textarea placeholder='Observações' value={observacoes} onChange={event => setObservacoes(event.target.value)}></textarea>
         <button>Salvar</button>
       </form>
       <div className="caixacontatos">
         <input type="text" placeholder='buscar' />
-          <div className="caixaindividual">
-            <div className="boxtitulo">
-              <p className="nometitulo">Carla Gomes Farias</p>
-                <div>
-                  <a href="">editar</a>
-                  <a href="">excluir</a>
-                </div>
+        {contatos?.map(contato => {
+          return(
+            <div className="caixaindividual">
+              <div className="boxtitulo">
+                <p className="nometitulo">{contato.nome}</p>
+                  <div>
+                    <a href="">editar</a>
+                    <a href="">excluir</a>
+                  </div>
+              </div>
+              <div className="dados">
+                <p>{contato.email}</p>
+                <p>{contato.telefone}</p>
+                <p>{contato.observacoes}</p>
+              </div>
             </div>
-            <div className="dados">
-              <p>carla@gmail</p>
-              <p>00000</p>
-              <p>amiga</p>
-            </div>
-          </div>
+          )
+        })}
       </div>
     </main>
   )
