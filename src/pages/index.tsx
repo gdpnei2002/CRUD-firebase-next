@@ -124,24 +124,24 @@ export default function Home() {
       <div className="caixacontatos">
         <input type="text" onChange={buscar} placeholder='buscar' />
         {estaBuscando ? 
-                    busca?.map(contato => {
-                      return(
-                        <div key={contato.chave} className="caixaindividual">
-                          <div className="boxtitulo">
-                            <p className="nometitulo">{contato.nome}</p>
-                              <div>
-                                <a onClick={() => editarDados(contato)} >editar</a>
-                                <a onClick={() => deletar(contato.chave)} >excluir</a>
-                              </div>
-                          </div>
-                          <div className="dados">
-                            <p>{contato.email}</p>
-                            <p>{contato.telefone}</p>
-                            <p>{contato.observacoes}</p>
-                          </div>
-                        </div>
-                      )
-                  }): contatos?.map(contato => {
+            busca?.map(contato => {
+              return(
+                  <div key={contato.chave} className="caixaindividual">
+                    <div className="boxtitulo">
+                      <p className="nometitulo">{contato.nome}</p>
+                      <div>
+                      <a onClick={() => editarDados(contato)} >editar</a>
+                      <a onClick={() => deletar(contato.chave)} >excluir</a>
+                    </div>
+                   </div>
+                   <div className="dados">
+                    <p>{contato.email}</p>
+                    <p>{contato.telefone}</p>
+                    <p>{contato.observacoes}</p>
+                   </div>
+                  </div>
+                    )
+              }): contatos?.map(contato => {
             return(
               <div key={contato.chave} className="caixaindividual">
                 <div className="boxtitulo">
