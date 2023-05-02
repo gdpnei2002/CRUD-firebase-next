@@ -1,5 +1,5 @@
 import { database } from "@/services/firebase"
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useEffect, useState, ChangeEvent } from "react"
 
 type Contato ={
   chave: string,
@@ -60,7 +60,7 @@ export default function Home() {
     setObservacoes('')
   }
 
-  function buscar(event: FormEvent){
+  function buscar(event: ChangeEvent<HTMLInputElement>){
     const palavra = event.target.value
     if(palavra.length > 0){
       setEstaBuscando(true)
