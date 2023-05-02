@@ -21,6 +21,10 @@ export default function Home() {
 
   const [estaBuscando, setEstaBuscando] = useState(false)
 
+  const [chave, setChave] = useState('')
+
+  const [atualizando, setAtualizando] = useState(false)
+
   useEffect(() =>{
     const RefContatos = database.ref('contatos')
 
@@ -73,6 +77,35 @@ export default function Home() {
   }
 
 
+  function editarDados(contato: Contato){
+    setAtualizando(true)
+    setChave(contato.chave)
+    setNome(contato.nome)
+    setEmail(contato.email)
+    setTelefone(contato.telefone)
+    setObservacoes(contato.observacoes)
+  }
+
+  function atualizarContato(){
+    const ref= database.ref('contatos/')
+
+    const dados = {
+      'nome': nome,
+      'email': email,
+      'telefone': telefone,
+      'observacoes': observacoes
+    }
+
+    ref.child(chave).update(dados)
+
+    setNome('')
+    setEmail('')
+    setTelefone('')
+    setObservacoes('')
+
+    setAtualizando(false)
+  }
+
   return (
     <main className="container">
       <form action="" onSubmit={gravar}>
@@ -80,7 +113,10 @@ export default function Home() {
         <input type="email" value={email} placeholder='Email' onChange={event => setEmail(event.target.value)} />
         <input type="tel" value={telefone} placeholder='telefone' onChange={event => setTelefone(event.target.value)} />
         <textarea placeholder='Observações' value={observacoes} onChange={event => setObservacoes(event.target.value)}></textarea>
-        <button>Salvar</button>
+        { atualizando ?
+          <button type="button" onClick={atualizarContato}>atualizar</button> :
+          <button type="button" onClick={gravar}>Salvar</button>
+        }
       </form>
       <div className="caixacontatos">
         <input type="text" onChange={buscar} placeholder='buscar' />
@@ -91,7 +127,7 @@ export default function Home() {
                           <div className="boxtitulo">
                             <p className="nometitulo">{contato.nome}</p>
                               <div>
-                                <a href="">editar</a>
+                                <a onClick={() => editarDados(contato)} href="">editar</a>
                                 <a href="">excluir</a>
                               </div>
                           </div>
@@ -108,7 +144,7 @@ export default function Home() {
                 <div className="boxtitulo">
                   <p className="nometitulo">{contato.nome}</p>
                     <div>
-                      <a href="">editar</a>
+                      <a onClick={() => editarDados(contato)} href="">editar</a>
                       <a href="">excluir</a>
                     </div>
                 </div>
