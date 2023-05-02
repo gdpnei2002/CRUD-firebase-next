@@ -17,6 +17,10 @@ export default function Home() {
 
   const [contatos, setContatos] = useState<Contato[]>()
 
+  const [busca, setBusca] = useState<Contato[]>()
+
+  const [estaBuscando, setEstaBuscando] = useState(false)
+
   useEffect(() =>{
     const RefContatos = database.ref('contatos')
 
@@ -51,6 +55,24 @@ export default function Home() {
     setTelefone('')
     setObservacoes('')
   }
+
+  function buscar(event: FormEvent){
+    const palavra = event.target.value
+    if(palavra.length > 0){
+      setEstaBuscando(true)
+      const dados = new Array
+  
+      contatos?.map(contato => {
+        const regra = new RegExp(event.target.value, "gi")
+        if(regra.test(contato.nome)){
+          dados.push(contato)
+        }
+      })
+      setBusca(dados)
+    }else{setEstaBuscando(false)}
+  }
+
+
   return (
     <main className="container">
       <form action="" onSubmit={gravar}>
@@ -61,25 +83,44 @@ export default function Home() {
         <button>Salvar</button>
       </form>
       <div className="caixacontatos">
-        <input type="text" placeholder='buscar' />
-        {contatos?.map(contato => {
-          return(
-            <div className="caixaindividual">
-              <div className="boxtitulo">
-                <p className="nometitulo">{contato.nome}</p>
-                  <div>
-                    <a href="">editar</a>
-                    <a href="">excluir</a>
-                  </div>
+        <input type="text" onChange={buscar} placeholder='buscar' />
+        {estaBuscando ? 
+                    busca?.map(contato => {
+                      return(
+                        <div key={contato.chave} className="caixaindividual">
+                          <div className="boxtitulo">
+                            <p className="nometitulo">{contato.nome}</p>
+                              <div>
+                                <a href="">editar</a>
+                                <a href="">excluir</a>
+                              </div>
+                          </div>
+                          <div className="dados">
+                            <p>{contato.email}</p>
+                            <p>{contato.telefone}</p>
+                            <p>{contato.observacoes}</p>
+                          </div>
+                        </div>
+                      )
+                  }): contatos?.map(contato => {
+            return(
+              <div key={contato.chave} className="caixaindividual">
+                <div className="boxtitulo">
+                  <p className="nometitulo">{contato.nome}</p>
+                    <div>
+                      <a href="">editar</a>
+                      <a href="">excluir</a>
+                    </div>
+                </div>
+                <div className="dados">
+                  <p>{contato.email}</p>
+                  <p>{contato.telefone}</p>
+                  <p>{contato.observacoes}</p>
+                </div>
               </div>
-              <div className="dados">
-                <p>{contato.email}</p>
-                <p>{contato.telefone}</p>
-                <p>{contato.observacoes}</p>
-              </div>
-            </div>
-          )
-        })}
+            )
+        })
+      }
       </div>
     </main>
   )
