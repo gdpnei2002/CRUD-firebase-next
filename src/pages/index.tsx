@@ -106,6 +106,9 @@ export default function Home() {
     setAtualizando(false)
   }
 
+  function deletar(ref:string){
+    const referencia = database.ref(`contatos/${ref}`).remove()
+  }
   return (
     <main className="container">
       <form action="" onSubmit={gravar}>
@@ -127,8 +130,8 @@ export default function Home() {
                           <div className="boxtitulo">
                             <p className="nometitulo">{contato.nome}</p>
                               <div>
-                                <a onClick={() => editarDados(contato)} href="">editar</a>
-                                <a href="">excluir</a>
+                                <a onClick={() => editarDados(contato)} >editar</a>
+                                <a onClick={() => deletar(contato.chave)} >excluir</a>
                               </div>
                           </div>
                           <div className="dados">
@@ -144,8 +147,8 @@ export default function Home() {
                 <div className="boxtitulo">
                   <p className="nometitulo">{contato.nome}</p>
                     <div>
-                      <a onClick={() => editarDados(contato)} href="">editar</a>
-                      <a href="">excluir</a>
+                      <a onClick={() => editarDados(contato)}>editar</a>
+                      <a onClick={() => deletar(contato.chave)} >excluir</a>
                     </div>
                 </div>
                 <div className="dados">
