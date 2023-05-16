@@ -1,12 +1,15 @@
 import { database } from "@/services/firebase"
 import { FormEvent, useEffect, useState, ChangeEvent } from "react"
+import firebase from 'firebase/app'; // Importe o módulo 'firebase/app'
+import 'firebase/storage'; // Importe o módulo 'firebase/storage'
 
 type Contato ={
   chave: string,
   nome: string,
   email: string,
   telefone: string,
-  observacoes: string
+  observacoes: string,
+  foto: string 
 }
 export default function Home() {
 
@@ -25,6 +28,8 @@ export default function Home() {
 
   const [atualizando, setAtualizando] = useState(false)
 
+  const [fotoArquivo, setFotoArquivo] = useState<File | null>(null);
+
   useEffect(() =>{
     const RefContatos = database.ref('contatos')
 
@@ -36,28 +41,47 @@ export default function Home() {
           'email': valor.email,
           'telefone': valor.telefone,
           'observacoes': valor.observacoes,
+          'foto': valor.foto
         }
       })
       setContatos(resultadoContatos)
     })
   },[])
 
-  function gravar(event: FormEvent){
-    event.preventDefault()
-    const ref = database.ref('contatos')
-
-    const dados = {
-      nome,
-      email,
-      telefone,
-      observacoes,
+  
+  function gravar(event: FormEvent) {
+    event.preventDefault();
+  
+    if (fotoArquivo) {
+      const storageRef: firebase.storage.Reference = firebase.storage().ref();
+  
+      const nomeFoto = Date.now().toString();
+      const fotoRef = storageRef.child(`${nomeFoto}.jpg`);
+      fotoRef.put(fotoArquivo).then(() => {
+        fotoRef.getDownloadURL().then((url) => {
+          const ref = database.ref('contatos');
+  
+          const dados = {
+            nome,
+            email,
+            telefone,
+            observacoes,
+            foto: url
+          };
+  
+          ref.push(dados);
+          setNome('');
+          setEmail('');
+          setTelefone('');
+          setObservacoes('');
+        });
+      });
     }
+  }
 
-    ref.push(dados)
-    setNome('')
-    setEmail('')
-    setTelefone('')
-    setObservacoes('')
+  function handleFotoChange(event: ChangeEvent<HTMLInputElement>) {
+    const arquivo = event.target.files?.[0] || null;
+    setFotoArquivo(arquivo);
   }
 
   function buscar(event: ChangeEvent<HTMLInputElement>){
@@ -116,6 +140,7 @@ export default function Home() {
         <input type="email" value={email} placeholder='Email' onChange={event => setEmail(event.target.value)} />
         <input type="tel" value={telefone} placeholder='telefone' onChange={event => setTelefone(event.target.value)} />
         <textarea placeholder='Observações' value={observacoes} onChange={event => setObservacoes(event.target.value)}></textarea>
+        <input type="file" onChange={handleFotoChange} />
         { atualizando ?
           <button type="button" onClick={atualizarContato}>atualizar</button> :
           <button type="button" onClick={gravar}>Salvar</button>
@@ -135,6 +160,7 @@ export default function Home() {
                     </div>
                    </div>
                    <div className="dados">
+                    <img src={contato.foto} alt="Foto do Contato" /> {/* Adicione esta linha */}
                     <p>{contato.email}</p>
                     <p>{contato.telefone}</p>
                     <p>{contato.observacoes}</p>
@@ -143,20 +169,21 @@ export default function Home() {
                     )
               }): contatos?.map(contato => {
             return(
-              <div key={contato.chave} className="caixaindividual">
-                <div className="boxtitulo">
-                  <p className="nometitulo">{contato.nome}</p>
-                    <div>
-                      <a onClick={() => editarDados(contato)}>editar</a>
-                      <a onClick={() => deletar(contato.chave)} >excluir</a>
-                    </div>
-                </div>
-                <div className="dados">
-                  <p>{contato.email}</p>
-                  <p>{contato.telefone}</p>
-                  <p>{contato.observacoes}</p>
+            <div key={contato.chave} className="caixaindividual">
+              <div className="boxtitulo">
+                <p className="nometitulo">{contato.nome}</p>
+                <div>
+                  <a onClick={() => editarDados(contato)}>editar</a>
+                  <a onClick={() => deletar(contato.chave)}>excluir</a>
                 </div>
               </div>
+              <div className="dados">
+                <img src={contato.foto} alt="Foto do Contato" /> {/* Adicione esta linha */}
+                <p>{contato.email}</p>
+                <p>{contato.telefone}</p>
+                <p>{contato.observacoes}</p>
+              </div>
+            </div>
             )
         })
       }
