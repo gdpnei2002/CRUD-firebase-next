@@ -2,13 +2,13 @@ import firebase from "firebase/app"
 import "firebase/database"
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAEUpruXLvI03UORoFtqdMGDr8VV8ZB7Ic",
-    authDomain: "crud-35a7a.firebaseapp.com",
-    projectId: "crud-35a7a",
-    storageBucket: "crud-35a7a.appspot.com",
-    messagingSenderId: "449273808959",
-    appId: "1:449273808959:web:0230fe247811eebeaa108a"
-  };
+  apiKey: "AIzaSyBLmRw4jmktXIoMoBLYG_SlafLU-T3UJLU",
+  authDomain: "crud-foto.firebaseapp.com",
+  projectId: "crud-foto",
+  storageBucket: "crud-foto.appspot.com",
+  messagingSenderId: "597347216954",
+  appId: "1:597347216954:web:a116a44c2d11b1fd310f03"
+};
 
   if(!firebase.apps.length){
     firebase.initializeApp(firebaseConfig)
